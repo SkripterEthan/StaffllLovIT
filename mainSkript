@@ -1,1 +1,147 @@
+# skStaff'llLovIT
 
+&7[&askSLI&7]&e >>> &7
+
+
+on load:
+    set {serv} to "(YOUR SERVER NAME)"
+    set {servIP} to "(YOUR SERVERS IP)"
+    if {autoBcast} isn't set:
+        set {autoBcast} to "&c[skStaff'llLovIT] &8>>> Available on skUnity."
+
+
+
+
+
+command /sli [<text>]:
+    permission: sli.sli
+    permission message:&7[&askSLI&7]&e >>> &7 Insufficient Permissions.
+    trigger:
+        if arg-1 is "reload":
+            make console execute command "/sk reload sli"
+            wait 1 tick
+            send "&7[&askSLI&7]&e >>> &7 Reloading..."
+            wait 4 seconds
+            send "&7[&askSLI&7]&e >>> &7 &a Reloaded!"
+        else if:
+            if arg-1 is "settings":
+                open virtual chest with 4 rows named "&8[&cskSLI&8]&e Settings"
+                format gui slot 0 of player with green stained glass pane named "Broadcast Settings" with lore "Set messages, and enable/disable auto broadcasts." to run:
+                    open virtual chest with 2 rows to player named "&cSLI&8 BCast Settings"
+                    format gui slot 4 of player with blue stained glass pane named "Toggle BCast" to run:
+                        if {autoBcast} is false:
+                            set {autoBcast} to true
+                            send "&aAutomatic Broadcasts are now enabled. By default, they will read: '&c[skStaff'llLovIT] &8>>> Available on skUnity.'"
+                        else:
+                            set {autoBcast} to false
+                            send "&eAutomatic Broadcasts are now disabled."
+                    format gui slot 9 of player with purple stained glass pane named "MSG 1" with lore "Message: &bHaving fun? &3Vote now!" to close then run:
+                        set {bcastMSG} to "&bHaving fun? Vote now!" # Voting may be added into SLI in the future. (SLI = Staff'llLovIT) Though, this probably will not happen.
+                        wait 1 tick
+                        send "&aSet automatic broadcast message to %{bcastMSG}%"
+                    format gui slot 11 of player with orange stained glass pane named "MSG 2" with lore "Message: &dJoin back at any time using the IP &5%{servIP}%!" to close then run:
+                        set {bcastMSG} to "&dJoin back at anytime using the IP %{servIP}%!"
+                        wait 1 tick
+                        send "&aSet automatic broadcast message to %{bcastMSG}%"
+                    format gui slot 13 of player with magenta stained glass pane named "MSG 3" with lore "Message: &eHaving fun?&b Give us feedback by (<PREFERED CHOICE OF FEEDBACK>)!" to close then run:
+                        set {bcastMSG} to "&eHaving fun?&b Give us feedback by (<PREFERED CHOICE OF FEEDBACK>)!"
+                        wait 1 tick
+                        send "&aSet automatic broadcast message to %{bcastMSG}%"
+                else if:
+                    if arg-1 is not set:
+                        send "&cInvalid syntax! Use command &o/sli help&r&c for help!"
+                    else if:
+                        if arg-1 is "help":
+                            send "&7- &aSLI Help Menu&7 -"
+                            send "&e/sli reload - &aReloads Staff'llLovIT."
+                            send "&e/sli settings - &aGUI Settings Menu"
+
+every 35 minutes:
+    if {autoBcast} is true:
+        broadcast "%{bcastMSG}%"
+    else:
+        log "[skSLI] >>> attempted to broadcast automaticaly, however it is disabled. in game, do /sli settings - broadcast settings - toggle bcast"
+
+
+
+on first join:
+    chance of 25%:
+        set {codeSign} to "Catastrophy!"
+        loop all players:
+            loop-player has permission "sign.notify":
+                send "&7[&askSLI&7] &e>>> &7 Rule Code Notifier: Code set to %{codeSign}% &e&o- Player has 10 seconds to read Rule 1 (The code.)"
+    send "&7[&askSLI&7] &e>>> &7 10 Seconds to  read the rules. /rules"
+    chance of 25%:
+        set {codeSign} to "Apple Sauce!"
+        loop all players:
+            loop-player has permission "sign.notify":
+                send "&7[&askSLI&7] &e>>> &7 Rule Code Notifier: Code set to %{codeSign}% &e&o- Player has 10 seconds to read Rule 1 (The code.)"
+    chance of 25%:
+        set {codeSign} to "Diamonds!"
+        loop all players:
+            loop-player has permission "sign.notify":
+                send "&7[&askSLI&7] &e>>> &7 Rule Code Notifier: Code set to %{codeSign}% - Player has 10 seconds to read Rule 1 (The code.)"
+
+    chance of 25%:
+        set {codeSign} to "A beautiful mess.!"
+        loop all players:
+            loop-player has permission "sign.notify":
+                send "&7[&askSLI&7] &e>>> &7 Rule Code Notifier: Code set to %{codeSign}% - Player has 10 seconds to read Rule 1 (The code.)"
+
+    wait 10 seconds
+    loop all players:
+        loop-player has permission "sign.notify":
+            send "&7[&askSLI&7] &e>>> &7 10 seconds is up!"
+
+
+on command:
+    command is "/rules":
+        loop all players:
+            loop-player has permission "rules.notify":
+                send "&7[&askSLI&7] &e>>> &7 Player %sender% used the command /rules! Did they read 'em in time?."
+
+
+
+on command:
+    loop all players:
+        loop-player has permission "command.spy":
+            send "&7[&askSLI&7] &e>>> &7 has executed the command /%command%!"
+
+
+command /offenseadd [<offline player>] [<text>]:
+    permission: sli.offadd
+    permission message: &7[&askSLI&7]&e >>> &7 Insufficient Permissions.
+    aliases: /offadd, /ofad
+    trigger:
+        if arg-1 has played before:
+            if arg-2 is set:
+                add "&a%arg 2% &e- added by &o%sender%" to {offenses::%arg 1%}
+            else:
+                send "&cInvalid syntax! (/offenseadd <online/offline player> <offense>"
+        else:
+            send "&cError!&7 Specified player (%arg 1%) has never joined before."
+
+
+command /softban [<offline player>]:
+    permission: sli.softban
+    permission message: &7[&askSLI&7]&e >>> &7 Insufficient Permissions.
+    trigger:
+        if arg-1 is set:
+            add "%arg 1's uuid%" to {softBans::*}
+            send "&cYou've softbanned %arg 1%!"
+            broadcast "&c%sender%&e has soft banned &3%arg 1%!"
+
+
+function softBanned():
+    send "&0[&4skSLI&0]&c >>> You're soft banned on this server. The action you've tried to do is blocked."
+    cancel event
+    log "%sender% has done a soft banned action."
+
+on join:
+    if {softBans::*} contains "%sender":
+        send "&0[&4skSLI&0]&c >>> You're soft banned on this server. You can still play, but your actions will be limited."
+
+on break:
+    if {softBans::*} contains "%sender":
+        softBanned()
+        log "%sender% is soft banned, and tried to break a block."
